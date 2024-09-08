@@ -2,11 +2,13 @@ package web
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/devfullcycle/20-CleanArch/internal/entity"
 	"github.com/devfullcycle/20-CleanArch/internal/usecase"
 	"github.com/devfullcycle/20-CleanArch/pkg/events"
+	"github.com/go-chi/chi/v5"
 )
 
 type WebOrderHandler struct {
@@ -49,7 +51,9 @@ func (h *WebOrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *WebOrderHandler) ListById(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Query().Get("id")
+	id := chi.URLParam(r, "id")
+
+	fmt.Println("Mostrando ID", chi.URLParam(r, "id"))
 
 	var dto usecase.OrderInputListByIdDTO
 	dto.ID = id
