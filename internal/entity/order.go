@@ -43,10 +43,3 @@ func (o *Order) CalculateFinalPrice() error {
 	}
 	return nil
 }
-
-func (o *Order) ListById(id string) (*Order, error) {
-	if o.ID == id {
-		return o, nil
-	}
-	return nil, errors.New("order not found")
-}
