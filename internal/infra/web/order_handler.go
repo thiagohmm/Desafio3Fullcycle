@@ -2,7 +2,6 @@ package web
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/devfullcycle/20-CleanArch/internal/entity"
@@ -53,8 +52,6 @@ func (h *WebOrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 func (h *WebOrderHandler) ListById(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
-	fmt.Println("Mostrando ID", chi.URLParam(r, "id"))
-
 	var dto usecase.OrderInputListByIdDTO
 	dto.ID = id
 
@@ -62,6 +59,22 @@ func (h *WebOrderHandler) ListById(w http.ResponseWriter, r *http.Request) {
 		OrderRepository: h.OrderRepository,
 	}
 	output, err := listOrderById.ExecuteListById(dto)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = json.NewEncoder(w).Encode(output)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *WebOrderHandler) ListAll(w http.ResponseWriter, r *http.Request) {
+
+	listAllOrders := usecase.ListAllOrderUseCase(h.OrderRepository)
+
+	output, err := listAllOrders.ExecuteList()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

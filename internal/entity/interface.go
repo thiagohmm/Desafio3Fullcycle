@@ -4,4 +4,5 @@ type OrderRepositoryInterface interface {
 	Save(order *Order) error
 	// GetTotal() (int, error)
 	ListById(id string) (*Order, error)
+	GetAll() ([]*Order, error)
 }

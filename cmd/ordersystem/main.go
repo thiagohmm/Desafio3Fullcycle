@@ -33,7 +33,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(configs)
+
 	defer db.Close()
 
 	rabbitMQChannel := getRabbitMQChannel()
@@ -48,6 +48,7 @@ func main() {
 	webserver := webserver.NewWebServer(configs.WebServerPort)
 	webOrderHandler := NewWebOrderHandler(db, eventDispatcher)
 	webserver.AddHandler("POST", "/order", webOrderHandler.Create)
+	webserver.AddHandler("GET", "/order", webOrderHandler.ListAll)
 	webserver.AddHandler("GET", "/order/{id}", webOrderHandler.ListById)
 	fmt.Println("Starting web server on port", configs.WebServerPort)
 	go webserver.Start()
