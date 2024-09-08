@@ -47,3 +47,24 @@ func (h *WebOrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (h *WebOrderHandler) ListById(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+
+	var dto usecase.OrderInputListByIdDTO
+	dto.ID = id
+
+	listOrderById := usecase.ListOrderByIdUseCase{
+		OrderRepository: h.OrderRepository,
+	}
+	output, err := listOrderById.ExecuteListById(dto)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = json.NewEncoder(w).Encode(output)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
