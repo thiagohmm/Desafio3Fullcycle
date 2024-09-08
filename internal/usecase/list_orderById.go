@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"github.com/devfullcycle/20-CleanArch/internal/entity"
-	"github.com/devfullcycle/20-CleanArch/pkg/events"
 )
 
 type OrderInputListByIdDTO struct {
@@ -18,18 +17,14 @@ type OrderOutputListByDTO struct {
 
 type ListOrderByIdUseCase struct {
 	OrderRepository entity.OrderRepositoryInterface
-	OrderCreated    events.EventInterface
 }
 
 func ListOrderUseCase(
 	OrderRepository entity.OrderRepositoryInterface,
-	//OrderCreated events.EventInterface,
-	//EventDispatcher events.EventDispatcherInterface,
+
 ) *ListOrderByIdUseCase {
 	return &ListOrderByIdUseCase{
 		OrderRepository: OrderRepository,
-		//OrderCreated:    OrderCreated,
-		//EventDispatcher: EventDispatcher,
 	}
 }
 
