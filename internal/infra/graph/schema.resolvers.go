@@ -6,6 +6,8 @@ package graph
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/devfullcycle/20-CleanArch/internal/infra/graph/model"
 	"github.com/devfullcycle/20-CleanArch/internal/usecase"
@@ -31,20 +33,25 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input *model.OrderIn
 }
 
 func (r *queryResolver) ListOrders(ctx context.Context) ([]*model.Order, error) {
-	output, err := r.ListAllOrdersUseCase.ExecuteList()
+	log.Println("Executing ListOrders resolver")
+	orders, err := r.ListAllOrdersUseCase.ExecuteList()
+	fmt.Println("Orders: ", orders)
 	if err != nil {
+		log.Printf("Error executing ListAllOrdersUseCase: %v", err)
 		return nil, err
 	}
-	var orders []*model.Order
-	for _, order := range output {
-		orders = append(orders, &model.Order{
+
+	var ordersModel []*model.Order
+	for _, order := range orders {
+		ordersModel = append(ordersModel, &model.Order{
 			ID:         order.ID,
 			Price:      float64(order.Price),
 			Tax:        float64(order.Tax),
 			FinalPrice: float64(order.FinalPrice),
 		})
 	}
-	return orders, nil
+
+	return ordersModel, nil
 }
 
 // Mutation returns MutationResolver implementation.
@@ -55,3 +62,7 @@ func (r *Resolver) Query() QueryResolver {
 
 type queryResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
+
+func (r *queryResolver) Orders(ctx context.Context) ([]*model.Order, error) {
+	panic(fmt.Errorf("not implemented: Orders - orders"))
+}

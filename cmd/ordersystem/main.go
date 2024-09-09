@@ -7,7 +7,9 @@ import (
 	"net/http"
 
 	graphql_handler "github.com/99designs/gqlgen/graphql/handler"
+
 	"github.com/99designs/gqlgen/graphql/playground"
+
 	"github.com/devfullcycle/20-CleanArch/configs"
 	"github.com/devfullcycle/20-CleanArch/internal/event/handler"
 	"github.com/devfullcycle/20-CleanArch/internal/infra/graph"
@@ -67,14 +69,20 @@ func main() {
 	}
 	go grpcServer.Serve(lis)
 
-	srv := graphql_handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
-		CreateOrderUseCase: *createOrderUseCase,
-	}}))
+	srv := graphql_handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{
+		Resolvers: &graph.Resolver{
+			CreateOrderUseCase:   *createOrderUseCase,
+			ListAllOrdersUseCase: *listAllOrdersUseCase,
+		},
+	}))
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 
 	fmt.Println("Starting GraphQL server on port", configs.GraphQLServerPort)
-	http.ListenAndServe(":"+configs.GraphQLServerPort, nil)
+	err = http.ListenAndServe(":"+configs.GraphQLServerPort, nil)
+	if err != nil {
+		fmt.Printf("Error starting GraphQL server: %v\n", err)
+	}
 }
 
 func getRabbitMQChannel() *amqp.Channel {
