@@ -1,23 +1,23 @@
-version: '3.8'
+version: '3'
 
 services:
   mysql:
     image: mysql:5.7
-    platform: linux/amd64
     container_name: mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: orders
+      MYSQL_USER: root
       MYSQL_PASSWORD: root
     ports:
       - 3306:3306
     volumes:
       - .docker/mysql:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
 
   rabbitmq:
     image: rabbitmq:3-management
-    platform: linux/amd64
     container_name: rabbitmq
     restart: always
     ports:
