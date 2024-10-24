@@ -8,13 +8,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: orders
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      #MYSQL_USER: root
+      #MYSQL_PASSWORD: root
     ports:
       - 3306:3306
     volumes:
       - .docker/mysql:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d
+      - ./.mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - mynetwork
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -26,3 +28,10 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - mynetwork
+
+# Definição da rede
+networks:
+  mynetwork:
+    driver: bridge

@@ -21,13 +21,21 @@ func LoadConfig(path string) (*conf, error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigFile(".env")
 	viper.AutomaticEnv()
+
+	// Tente ler o arquivo de configuração
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(err)
+		// Se o arquivo .env não for encontrado, continue sem entrar em pânico
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			return nil, err
+		}
 	}
+
+	// Deserializa as configurações para a estrutura cfg
 	err = viper.Unmarshal(&cfg)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return cfg, err
+
+	return cfg, nil
 }
